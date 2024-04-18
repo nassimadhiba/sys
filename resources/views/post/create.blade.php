@@ -1,53 +1,61 @@
-<!DOCTYPE html>
- <html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+@extends('layouts.dashboard.dashlayout')
 
 
- </head>
- <body>
+@section('content')
+    <h1 class="mb-5">Ajouter un Nouveau annonce</h1>
+
+    <div class="card">
+        <div class="card-body">
+
+            <form action="{{ route('post.store') }}" method="POST" class="mt-3 mx-auto" enctype="multipart/form-data">
+                @csrf
+
+                <div class="mb-4">
+                    <label class="form-label" for="image">Image de Profile</label>
+                    <input type="file" class="form-control" id="image" name="image">
+                    @error('image')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="titre">Titre</label>
+                    <input type="text" class="form-control" id="titre" name="titre" required>
+                    @error('titre')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-4">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea type="text" rows="5"  class="form-control" id="description" name="description"></textarea>
+                    @error('description')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="email">Email Adresse</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    @error('email')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
 
 
-    <div class="container">
-        <h1>Add New POST</h1>
 
-        <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="form-group">
-                <label for="image">Profile Image</label>
-                <input type="file" class="form-control-file" id="image" name="image">
-            </div>
+                <div class="mb-4">
+                    <label class="form-label" for="localisation">Adresse</label>
+                    <input type="text" class="form-control" id="localisation" name="localisation">
+                    @error('localisation')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <div class="form-group">
-                <label for="titre">titre</label>
-                <input type="text" class="form-control" id="titre" name="titre" required>
-            </div>
-            <div class="form-group">
-                <label for="description">description</label>
-                <textarea type="text" class="form-control" id="description" name="description"></textarea>
-            </div>
+                <button type="submit" class="btn btn-primary">Ajouter un post</button>
+            </form>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-
-
-
-            <div class="form-group">
-                <label for="localisation">Address</label>
-                <input type="text" class="form-control" id="localisation" name="localisation">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Add post</button>
-        </form>
+        </div>
     </div>
 
+@endsection
 
-</body>
-</html>

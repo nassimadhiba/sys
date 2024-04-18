@@ -157,8 +157,8 @@
                                         </div>
                                         <div class="card-body">
 
-                                                <button type="button" class="btn btn-secondary">VOIR PLUS</button>
-                                            </a>
+                                            <a  href="{{ route('post.show',$post->id) }}" class="btn btn-secondary">VOIR PLUS</a>
+
                                         </div>
                                     </div>
                                 </div>

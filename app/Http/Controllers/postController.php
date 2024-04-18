@@ -5,23 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\post;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class postController extends Controller
-
 {
 
     public function vu()
     {
-        $post = post::all();
+        $post = post::where('statut','!=',false)->get();
         return view('welcome', compact('post'));
     }
     public function index(): view
     {
-        $userId = Auth::id();
-        $post = Post::where('user_id', $userId)->get();
-        return view('post.index', compact('post'));
+        $user = Auth::user();
+        $role=$user->role;
+        if ( $role=='admin') {
+            $post = Post::all();
+
+        }else{
+            $post = Post::where('user_id',  Auth::id())->get();
+
+        }
+        return view('post.index', compact('post','role'));
     }
 
     public function create(): view
@@ -56,17 +61,22 @@ class postController extends Controller
 
     }
 
-
     public function show($id)
     {
-        $post = post::findOrFail($id);
+        $post = Post::findOrFail($id);
         return view('post.show', compact('post'));
     }
 
-
+    public function accepter($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->statut=$post->statut==true ? false : true;
+        $post->save();
+        return redirect()->route('post.index')->with('success', 'post accepted successfully');
+    }
     public function edit($id)
     {
-        $post = post::find($id);
+        $post = post::where("user_id", auth()->user()->id)->find($id);
         return view('post.edit', compact('post'));
     }
 
@@ -74,8 +84,7 @@ class postController extends Controller
     public function update(Request $request, $id)
     {
 
-        $post = post::find($id);
-
+        $post = post::where("user_id", auth()->user()->id)->find($id);
 
         $validatedData = $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -85,7 +94,6 @@ class postController extends Controller
             'localisation' => 'required| string',
 
         ]);
-
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -103,10 +111,10 @@ class postController extends Controller
 
     public function destroy($id)
     {
-        $post = post::findOrFail($id);
+        $post = post::where("user_id", auth()->user()->id)->find($id);
         $post->delete();
 
-        return redirect()->route('post.index')->with('success', 'postdeleted successfully');
+        return redirect()->route('post.index')->with('success', 'post deleted successfully');
 
     }
 }

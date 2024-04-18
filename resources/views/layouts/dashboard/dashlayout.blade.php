@@ -36,25 +36,38 @@
       <nav id="sidebar" class="sidebar js-sidebar">
         <div class="sidebar-content js-simplebar">
           <a class="sidebar-brand" href="index.html">
-            <span class="align-middle">AdminKit</span>
+            <span class="align-middle">Admin</span>
           </a>
 
           <ul class="sidebar-nav">
-           
 
-            <li class="sidebar-item {{ Request::is('home') ? "active" :""  }}">
-              <a class="sidebar-link" href="home">
+
+            <li class="sidebar-item {{ Route::currentRouteName() == 'home' ? "active" : ""  }}">
+              <a class="sidebar-link" href="{{ route('home') }}">
                 <i class="align-middle" data-feather="sliders"></i>
                 <span class="align-middle">Dashboard</span>
               </a>
             </li>
 
-            <li class="sidebar-item {{ Request::is('post') ? "active" :""  }}">
-              <a class="sidebar-link" href="post">
-                <i class="align-middle" data-feather="user"></i>
+            <li class="sidebar-item {{ Route::currentRouteName() == 'post.index' ? "active" : ""  }}">
+              <a class="sidebar-link" href="{{ route('post.index') }}">
+                <i class="align-middle" data-feather="edit"></i>
                 <span class="align-middle">Annonces</span>
               </a>
             </li>
+            <li class="sidebar-item {{ Route::currentRouteName() == 'notifications.index' ? "active" : "" }}">
+                <a class="sidebar-link" href="{{route('notifications.index')}}">
+                    <i class="align-middle" data-feather="bell"></i>
+                    <span class="align-middle">Notifications</span>
+                </a>
+            </li>
+            <li class="sidebar-item {{ Request::is('profile.edit') ? "active" : "" }}">
+                <a class="sidebar-link" href="{{ route('profile.edit',  Auth::user()->id) }}">
+                    <i class="align-middle" data-feather="user"></i>
+                    <span class="align-middle">Profil</span>
+                </a>
+            </li>
+
           </ul>
         </div>
       </nav>
@@ -76,112 +89,69 @@
                 >
                   <div class="position-relative">
                     <i class="align-middle" data-feather="bell"></i>
-                    <span class="indicator">4</span>
+                    <span class="indicator badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
                   </div>
                 </a>
                 <div
                   class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
                   aria-labelledby="alertsDropdown"
                 >
-                  <div class="dropdown-menu-header">4 New Notifications</div>
+                  <div class="dropdown-menu-header">{{ Auth::user()->unreadNotifications->count() }} New Notifications</div>
                   <div class="list-group">
-                    <a href="#" class="list-group-item">
-                      <div class="row g-0 align-items-center">
-                        <div class="col-2">
-                          <i
-                            class="text-danger"
-                            data-feather="alert-circle"
-                          ></i>
-                        </div>
-                        <div class="col-10">
-                          <div class="text-dark">Update completed</div>
-                          <div class="text-muted small mt-1">
-                            Restart server 12 to complete the update.
+
+                    @forelse (Auth::user()->unreadNotifications as $notification)
+                      <a href="{{ $notification->data['link'] }}" class="list-group-item">
+                        <div class="row g-0 align-items-center">
+                          <div class="col-2">
+                            <i class="text-warning" data-feather="bell"></i>
                           </div>
-                          <div class="text-muted small mt-1">30m ago</div>
-                        </div>
-                      </div>
-                    </a>
-                    <a href="#" class="list-group-item">
-                      <div class="row g-0 align-items-center">
-                        <div class="col-2">
-                          <i class="text-warning" data-feather="bell"></i>
-                        </div>
-                        <div class="col-10">
-                          <div class="text-dark">Lorem ipsum</div>
-                          <div class="text-muted small mt-1">
-                            Aliquam ex eros, imperdiet vulputate hendrerit et.
+                          <div class="col-10">
+                            <div class="text-dark">{{ $notification->data['titre'] }}</div>
+                            <div class="text-muted small mt-1">
+                              {{ $notification->data['message'] }}
+                            </div>
+                            <div class="text-muted small mt-1">
+                              {{ $notification->created_at->diffForHumans() }}
+                            </div>
                           </div>
-                          <div class="text-muted small mt-1">2h ago</div>
+                        </div>
+                      </a>
+                    @empty
+                      <div class="list-group-item">
+                        <div class="text-center">
+                          Aucune notification non lue
                         </div>
                       </div>
-                    </a>
-                    <a href="#" class="list-group-item">
-                      <div class="row g-0 align-items-center">
-                        <div class="col-2">
-                          <i class="text-primary" data-feather="home"></i>
-                        </div>
-                        <div class="col-10">
-                          <div class="text-dark">Login from 192.186.1.8</div>
-                          <div class="text-muted small mt-1">5h ago</div>
-                        </div>
-                      </div>
-                    </a>
-                    <a href="#" class="list-group-item">
-                      <div class="row g-0 align-items-center">
-                        <div class="col-2">
-                          <i class="text-success" data-feather="user-plus"></i>
-                        </div>
-                        <div class="col-10">
-                          <div class="text-dark">New connection</div>
-                          <div class="text-muted small mt-1">
-                            Christina accepted your request.
-                          </div>
-                          <div class="text-muted small mt-1">14h ago</div>
-                        </div>
-                      </div>
-                    </a>
+                    @endforelse
+
+
                   </div>
                   <div class="dropdown-menu-footer">
-                    <a href="#" class="text-muted">Show all notifications</a>
+                    <a href="{{ route('notifications.index') }}" class="text-muted">Show all notifications</a>
                   </div>
                 </div>
               </li>
-             
+
+
               <li class="nav-item dropdown">
-                <a
-                  class="nav-icon dropdown-toggle d-inline-block d-sm-none"
-                  href="#"
-                  data-bs-toggle="dropdown"
-                >
-                  <i class="align-middle" data-feather="settings"></i>
+                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    {{ Auth::user()->name }}
                 </a>
 
-                <a
-                  class="nav-link dropdown-toggle d-none d-sm-inline-block"
-                  href="#"
-                  data-bs-toggle="dropdown"
-                >
-                  <img
-                    src="img/avatars/avatar.jpg"
-                    class="avatar img-fluid rounded me-1"
-                    alt="Charles Hall"
-                  />
-                  <span class="text-dark">Charles Hall</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="pages-profile.html"
-                    ><i class="align-middle me-1" data-feather="user"></i>
-                    Profile</a
-                  >
-                  
-                
-                  
-                  
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Log out</a>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                       onclick="event.preventDefault();
+                                     document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </div>
-              </li>
+            </li>
+
+
             </ul>
           </div>
         </nav>
@@ -190,31 +160,7 @@
         @yield('content')
         </main>
 
-        <footer class="footer">
-          <div class="container-fluid">
-            <div class="row text-muted">
-              <div class="col-6 text-start">
-                <p class="mb-0">
-                  <a
-                    class="text-muted"
-                    href="https://adminkit.io/"
-                    target="_blank"
-                    ><strong>AdminKit</strong></a
-                  >
-                  -
-                  <a
-                    class="text-muted"
-                    href="https://adminkit.io/"
-                    target="_blank"
-                    ><strong>Bootstrap Admin Template</strong></a
-                  >
-                  &copy;
-                </p>
-              </div>
-              
-            </div>
-          </div>
-        </footer>
+
       </div>
     </div>
 

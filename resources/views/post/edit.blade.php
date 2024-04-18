@@ -1,53 +1,67 @@
-<!DOCTYPE html>
- <html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
- </head>
- <body>
+@extends('layouts.dashboard.dashlayout')
 
 
+@section('content')
 
-    <div class="container mt-4">
-        <h1>Edit POST</h1>
+<h1 class="mb-3">Editer un annonce</h1>
 
-        <form action="{{ route('post.update', $post->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-            <div class="form-group">
-                <label for="image">Profile Image</label>
-                <input type="file" class="form-control-file" id="image" name="image">
-            </div>
+    <div class="card">
+        <div class="card-img-top">
+            <img src="{{ Storage::url($post->image) }}" height="300" class="w-100" style="object-fit: cover" alt="">
 
-            <div class="form-group">
-                <label for="titre">titre</label>
-                <input type="text" class="form-control" id="titre" name="titre" required>
-            </div>
-            <div class="form-group">
-                <label for="description">description</label>
-                <textarea type="text" class="form-control" id="description" name="description"></textarea>
-            </div>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('post.update', $post->id) }}" method="POST" class="mt-3 mx-auto" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
+                <div class="mb-4">
+                    <label class="form-label" for="image">Image de Profile</label>
+                    <input type="file" class="form-control" id="image" name="image">
+                    @error('image')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="titre">Titre</label>
+                    <input type="text" class="form-control" id="titre" name="titre" value="{{ $post->titre }}" required>
+                    @error('titre')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-4">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea type="text" rows="5"  class="form-control" id="description" name="description">{{ $post->description }}</textarea>
+                    @error('description')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="email">Courriel</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ $post->email }}" required>
+                    @error('email')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
 
 
 
-            <div class="form-group">
-                <label for="localisation">Address</label>
-                <input type="text" class="form-control" id="localisation" name="localisation">
-            </div>
+                <div class="mb-4">
+                    <label class="form-label" for="localisation">Adresse</label>
+                    <input type="text" class="form-control" id="localisation" name="localisation" value="{{ $post->localisation }}">
+                    @error('localisation')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <button type="submit" class="btn btn-primary">Update post</button>
-        </form>
+                <button type="submit" class="btn btn-primary">Modifier un post</button>
+            </form>
+
+        </div>
     </div>
 
+@endsection
 
-</body>
-</html>
+
